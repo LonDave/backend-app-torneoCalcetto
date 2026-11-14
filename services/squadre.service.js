@@ -82,6 +82,7 @@ async function findById(id) {
         nome: squadra.nome,
         quartiere: squadra.quartiere,
         num_giocatori: rosa.length,                                 //-> calcolato in base alla lunghezza dell'arr
+        rosa
     }));
 }
 
