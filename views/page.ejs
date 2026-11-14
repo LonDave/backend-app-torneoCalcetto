@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= squadra.nome %> - Torneo di calcetto</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <main>
+        <h1><%= squadra.nome %></h1>
+        <p>Quartiere: <%= squadra.quartiere %></p>
+
+        <h2>Rosa</h2>
+
+        <% if (squadra.rosa.length === 0) { %>
+            <p>Nessun giocatore in rosa</p>
+        <% } else { %>
+            <ul>
+                <% for (const giocatore of squadra.rosa) { %>
+                    <li>
+                        <strong><%= giocatore.numero %></strong>
+                        <span><%= giocatore.nome %></span>
+                        <span><%= giocatore.ruolo %></span>
+                    </li>
+                <% } %>
+            </ul>
+        <% } %>
+    </main>
+</body>
+</html>

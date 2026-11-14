@@ -6,6 +6,7 @@ const { AppDataSource } = require('./config/typeorm.js');
 const { popolaDatabase } = require("./lib/sqlite-db.js");
 const squadreRoute = require("./routes/squadre.route.js");
 const giocatoriRoute = require("./routes/giocatori.route.js");
+const { findById } = require("./services/squadre.service.js");
 
 // conf file env (npm i dotenv)
 dotEnv.config({
@@ -15,7 +16,12 @@ dotEnv.config({
 // app & port
 const app = express();
 const PORT = process.env.PORT ?? 3000;                                                      //-> PORT assegnata dinamicamente dal server o 3000
+
 app.disable("x-powered-by");                                                                //-> evita di rivelare che l'applicazione usa server express
+
+app.set("view engine", "ejs");
+app.set("views", join(__dirname, "views"));
+app.use(express.static(join(__dirname, "public")));
 
 // per attivare la connection al db
 AppDataSource.initialize()
@@ -35,18 +41,52 @@ AppDataSource.initialize()
             next();
         }
 
-        // montaggio rotte
+        // montaggio rotte:
+        
+        // rotta web per ricerca by ID
+        app.get("/squadre/:id", async (req, res, next) => {
+            try {
+                const squadra = await findById(req.params.id);
+
+                res.render("page", {
+                    squadra
+                });
+            } catch (error) {
+                if (error.statusCode === 404) {
+                    return res.status(404).render("404");
+                }
+
+                next(error);
+            }
+        });
         app.use("/api/squadre", squadreRoute);
         app.use("/api/giocatori", apiKeyAuth, giocatoriRoute);                              //-> inserito il mw di controllo
 
-        // middleware centrale per gestione errori lato server
-        app.use((err, req, res, next) => {
-            const statusCode = err.statusCode ?? 500;
-
-            res.status(statusCode).json({
-                errore: err.message ?? "Errore interno del server"
+        app.use("/api", (req, res) => {
+            res.status(404).json({
+                errore: "rotta API non trovata"
             });
         });
+
+        // gestore centralizzato degli errori
+        app.use((err, req, res, next) => {
+            if (err.type === "entity.parse.failed") {
+                return res.status(400).json({
+                    errore: "json non valido"
+                });
+            }
+
+            const statusCode = err.statusCode ?? err.status ?? 500;
+
+            const messaggio =
+                statusCode >= 500
+                    ? "errore interno del server"
+                    : err.message;
+
+            res.status(statusCode).json({
+                errore: messaggio
+            })
+        })
 
         // listen del server 
         app.listen(PORT, () => {

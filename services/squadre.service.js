@@ -80,13 +80,13 @@ async function findById(id) {
         }));
 
     // torno tutte le squadre con anche le rose
-    return squadre.map((squadra) => ({
+    return {
         id: squadra.id,
         nome: squadra.nome,
         quartiere: squadra.quartiere,
         num_giocatori: rosa.length,                                 //-> calcolato in base alla lunghezza dell'arr
         rosa
-    }));
+    };
 }
 
 // export commonjs
