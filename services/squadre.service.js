@@ -68,7 +68,8 @@ async function findById(id) {
         throw new HttpError(404, "Squadra non trovata");
     }
 
-    const rosa = squadra.giocatori
+    // copia dell'arr orginale, poi prendono i giocatori di una squadra e si ordina per numero di maglia e poi si mappano 
+    const rosa = [...squadra.giocatori]
         .sort((a, b) => a.numero - b.numero)
         .map((giocatore) => ({
             id: giocatore.id,
@@ -77,6 +78,7 @@ async function findById(id) {
             numero: giocatore.numero
         }));
 
+    // torno tutte le squadre con anche le rose
     return squadre.map((squadra) => ({
         id: squadra.id,
         nome: squadra.nome,
