@@ -9,17 +9,21 @@
 
 <body>
     <main>
+        <!-- si prendono il nome e il quartiere della squadra -->
         <h1><%= squadra.nome %></h1>
         <p>Quartiere: <%= squadra.quartiere %></p>
 
         <h2>Rosa</h2>
 
+        <!-- se la rosa della squadra è zero si restituisce -->
         <% if (squadra.rosa.length === 0) { %>
             <p>Nessun giocatore in rosa</p>
         <% } else { %>
             <ul>
+                <!-- altrimenti per ogni giocatore facente parte della rosa -->
                 <% for (const giocatore of squadra.rosa) { %>
                     <li>
+                        <!-- si stampano numero, nome e ruolo -->
                         <strong><%= giocatore.numero %></strong>
                         <span><%= giocatore.nome %></span>
                         <span><%= giocatore.ruolo %></span>

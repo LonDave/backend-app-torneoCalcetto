@@ -19,8 +19,11 @@ const PORT = process.env.PORT ?? 3000;                                          
 
 app.disable("x-powered-by");                                                                //-> evita di rivelare che l'applicazione usa server express
 
+// engine per ejs
 app.set("view engine", "ejs");
 app.set("views", join(__dirname, "views"));
+
+// dichiarazione file statici
 app.use(express.static(join(__dirname, "public")));
 
 // per attivare la connection al db
@@ -41,27 +44,29 @@ AppDataSource.initialize()
             next();
         }
 
-        // montaggio rotte:
-        
         // rotta web per ricerca by ID
         app.get("/squadre/:id", async (req, res, next) => {
             try {
-                const squadra = await findById(req.params.id);
+                const squadra = await findById(req.params.id);                              //-> legge dal db la squadra partendo dall'ID
 
-                res.render("page", {
-                    squadra
-                });
+                // render della pagina
+                res.render("page", { squadra });
             } catch (error) {
                 if (error.statusCode === 404) {
+
+                    // qualora non esista una squadra per quell'id si manda una pagina dedicata 
                     return res.status(404).render("404");
                 }
 
                 next(error);
             }
         });
+
+        // montaggio rotte 
         app.use("/api/squadre", squadreRoute);
         app.use("/api/giocatori", apiKeyAuth, giocatoriRoute);                              //-> inserito il mw di controllo
 
+        // in caso di rotta API non esistente
         app.use("/api", (req, res) => {
             res.status(404).json({
                 errore: "rotta API non trovata"

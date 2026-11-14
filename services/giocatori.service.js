@@ -68,7 +68,7 @@ async function createGiocatore(body) {
     // salvataggio del giocatore nel db
     const salvato = await giocatoriDb.save(giocatore);
 
-    // ritorno 
+    // ritorno obj
     return {
         id: salvato.id,
         nome: salvato.nome,

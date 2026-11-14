@@ -21,4 +21,5 @@ const Giocatore = new EntitySchema({
     }
 });
 
+// export commonjs
 module.exports = { Giocatore }; 

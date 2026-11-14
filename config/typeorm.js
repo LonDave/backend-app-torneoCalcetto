@@ -12,4 +12,5 @@ const AppDataSource = new DataSource({
     logging: ["error"]                  //-> mostra in console quello che esegue
 });
 
+// export commonjs
 module.exports = { AppDataSource };

@@ -19,4 +19,5 @@ const Squadra = new EntitySchema({
     }
 })
 
+// export commonjs
 module.exports = { Squadra };
