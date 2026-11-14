@@ -1,6 +1,6 @@
 // import commonjs
 const { Router } = require("express");
-const { createGiocatore, delGiocatore } = require("../services/giocatori.service.js")
+const { createGiocatore, delGiocatore } = require("../services/giocatori.service.js");
 
 // "creazione" router
 const router = Router();

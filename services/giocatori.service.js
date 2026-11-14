@@ -91,7 +91,7 @@ async function delGiocatore(id) {
     const risulto = await giocatoriDb.delete(validazione.data);
 
     // se risultato ha effetto produce una riga affected, altrimenti si solleva un errore
-    if (!risulto.affected === 0) {
+    if (risulto.affected === 0) {
         throw new HttpError(404, "giocatore inesistente")
     }
 };
