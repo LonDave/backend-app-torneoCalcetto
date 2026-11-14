@@ -1,6 +1,6 @@
 // import commonjs
 const { Router } = require("express");
-const {createGiocatore, delGiocatore} = require("../services/giocatori.service.js")
+const { createGiocatore, delGiocatore } = require("../services/giocatori.service.js")
 
 // "creazione" router
 const router = Router();
@@ -20,7 +20,8 @@ router.post("/", async (req, res, next) => {
 // eliminazione giocatore
 router.delete("/:id", async (req, res, next) => {
     try {
-        const deGiocatore = await delGiocatore()
+        await delGiocatore(req.params.id)
+        res.status(204).send();
     } catch (error) {
         next(error);
     }

@@ -7,7 +7,7 @@ const { TypeOrmDbService } = require("../lib/typeorm.db.js");
 const GiocatoriSchema = z.object({
     nome: z.string().trim().min(1, "name is required").max(60),                                     //-> nome obbligatorio, rimuove gli spazi extra
     ruolo: z.enum(["portiere", "difensore", "centrocampista", "attaccante"]),                       //-> scelta disponibile solo tra i campi dell'arr
-    numero: z.int().min(1).max(99),                                                                 
+    numero: z.int().min(1).max(99),
     squadra_id: z.int().positive()
 }).strict();
 
@@ -79,10 +79,25 @@ async function createGiocatore(body) {
 };
 
 // eliminazione giocatore
-async function delGiocatore(params) {
+async function delGiocatore(id) {
+    const validazione = z.coerce.number().int().positive().safeParse(id);                   //-> valida l'id 
 
+    // se la validazione è negata solleva un errore
+    if (!validazione.success) {
+        throw new HttpError(400, "id non valido");
+    };
+
+    // elimina il giocatore dal db
+    const risulto = await giocatoriDb.delete(validazione.data);
+
+    // se risultato ha effetto produce una riga affected, altrimenti si solleva un errore
+    if (!risulto.affected === 0) {
+        throw new HttpError(404, "giocatore inesistente")
+    }
 };
 
+// export commonjs
 module.exports = {
-    createGiocatore
+    createGiocatore,
+    delGiocatore
 }
