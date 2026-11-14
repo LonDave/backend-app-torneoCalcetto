@@ -1,14 +1,20 @@
 // import router
-const {Router} = require("express");
+const { Router } = require("express");
+const { find } = require("../services/squadre.service")
 
 // "creazione" router
 const router = Router();
 
 // RESTful API
-router.get("/", async(req, res)=>{
-    const {nameTeam, order} = req.query;
-    const allTeams = await find(nameTeam, order);
-    res.json(allTeams);
+
+// prende tutte le squadre
+router.get("/", async (req, res, next) => {
+    try {
+        const squadre = await find(req.query.order);
+        res.json(squadre);
+    } catch (error) {
+        next(error);
+    }
 });
 
 // export con commonjs

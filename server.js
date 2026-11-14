@@ -13,15 +13,24 @@ dotEnv.config(join(__dirname, ".env"));
 const app = express();
 const PORT = process.env.PORT ?? 3000; //->PORT assegnata dinamicamente dal server o 3000
 
-// caso 1 per attivare la connection al db
+// per attivare la connection al db
 AppDataSource.initialize()
     .then(async () => {
 
         // aspetta di popolare il db con gli elementi dalla variabile AppDataSource
         await popolaDatabase(AppDataSource);
 
-        // middleware - montaggio rotte
+        // montaggio rotte
         app.use("/api/squadre", squadreRoute);
+
+        // middleware centrale per gestione errori 
+        app.use((err, req, res, next) => {
+            const statusCode = err.statusCode ?? 500;
+
+            res.status(statusCode).json({
+                errore: err.message ?? "Errore interno del server"
+            });
+        });
 
         // listen del server 
         app.listen(PORT, () => {
