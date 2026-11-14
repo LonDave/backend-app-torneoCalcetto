@@ -1,16 +1,17 @@
 // import commonjs
 const { z } = require("zod");
-const HttpError = require("../lib/http.error");
+const HttpError = require("../lib/http.error.js");
 const { TypeOrmDbService } = require("../lib/typeorm.db");
 
+// schema zod
 const SquadraSchema = z.object({
     id: z.int().gt(0),                                              //-> numero maggiore di 0
-    nome: z.string().min(1).max(20),                                //-> minimo 1 massimo 20 caratteri
+    nome: z.string().trim().min(1, "name is required").max(20),     //-> minimo 1 massimo 20 caratteri
     quartiere: z.string().optional()                                //-> opzionale
 });
 
 // crea un nuovo oggetto che è dato dall'entita del repository trovato
-const dbService = new TypeOrmDbService("Squadra");
+const squadreDb = new TypeOrmDbService("Squadra");
 
 // ordinamento per nome del team
 async function find(order = "nome") {
@@ -23,7 +24,7 @@ async function find(order = "nome") {
     }
 
     // ricerca per le options passate con realzione sui giocatori
-    const squadre = await dbService.find({
+    const squadre = await squadreDb.find({
         relations: {
             giocatori: true                                         //-> relazione sulla tabella giocatori
         },
@@ -51,7 +52,7 @@ async function findById(id) {
         throw new HttpError(400, "id non valido");
     }
 
-    const squadre = await dbService.find({
+    const squadre = await squadreDb.find({
         where: {                                                    //-> in modo da prendere solo l'id corrispondente
             id: risultato.data
         },

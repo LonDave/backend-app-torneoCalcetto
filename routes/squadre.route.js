@@ -1,11 +1,11 @@
 // import router
 const { Router } = require("express");
-const { find, findById } = require("../services/squadre.service")
+const { find, findById } = require("../services/squadre.service.js")
 
 // "creazione" router
 const router = Router();
 
-// RESTful API
+// RESTful API:
 
 // prende tutte le squadre
 router.get("/", async (req, res, next) => {
